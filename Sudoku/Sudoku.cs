@@ -51,9 +51,50 @@ namespace Sudoku
                
         public void Solve()
         {
+            for (int row = 0; row < WidthOfBoard; row++)
+            {
+                int numberToCheck = ReturnLowestMissingNumberInRow(row);
+                bool exclusiveEmptySquare = false;
+                if (numberToCheck != 0)
+                {
+                    exclusiveEmptySquare = CheckRow(numberToCheck, row, exclusiveEmptySquare);
+                }
+            }
 
         }
 
+        public int ReturnLowestMissingNumberInRow(int row)
+        {
+            for (int i = 1; i <= WidthOfBoard; i++)
+            {
+                for (int j = 0; j < WidthOfBoard; j++)
+                {
+                    if (Matrix[row, j] != i)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return 0;
+        }
 
+        public bool CheckRow(int numberToCheck, int column, bool numberIsExclusive)
+        {
+            for (int i = 0; i < WidthOfBoard; i++)
+            {                
+                if (Matrix[i, column] == numberToCheck)
+                {
+                    return false;                    
+                }               
+            }
+            if (numberIsExclusive == true)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
+
+        }
     }
 }
