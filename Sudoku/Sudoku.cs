@@ -9,17 +9,18 @@ namespace Sudoku
     class Sudoku
     {
         const int WidthOfBoard = 9;
-
+       
         public string BoardAsText { get; set; }
+        public char[,] Matrix { get; set; }
 
-        public Sudoku(string initArragement)
+        public Sudoku(string initialNumbers)
         {
-            BoardAsText = FormatString(initArragement);            
+            Matrix = new char[WidthOfBoard, WidthOfBoard];
+            BoardAsText = StringToSudokuBoard(initialNumbers);            
         }
 
-        public string FormatString (string initArragement)
+        public string StringToSudokuBoard (string initialNumbers)
         {
-            char[,] matrix = new char[9, 9];
             string formatedMatrix = "+---------+---------+---------+\n";
 
             for (int i = 0; i < WidthOfBoard; i++)
@@ -30,14 +31,14 @@ namespace Sudoku
                     {
                         formatedMatrix += "|";
                     }
-                    if (initArragement[j + (i * 9)]=='0')
+                    if (initialNumbers[j + (i * 9)]=='0')
                     {
-                        matrix[i, j] = ' ';
+                        Matrix[i, j] = ' ';
                     } else
                     {
-                        matrix[i, j] = initArragement[j + (i * 9)];
+                        Matrix[i, j] = initialNumbers[j + (i * 9)];
                     }                    
-                    formatedMatrix += String.Format(" {0} ", matrix[i, j]);
+                    formatedMatrix += String.Format(" {0} ", Matrix[i, j]);
                 }
                 formatedMatrix += "|\n";
                 if ((i + 1) % 3 == 0)
