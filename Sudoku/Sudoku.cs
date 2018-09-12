@@ -23,25 +23,25 @@ namespace Sudoku
         {
             string formatedMatrix = "+---------+---------+---------+\n";
 
-            for (int i = 0; i < WidthOfBoard; i++)
+            for (int row = 0; row < WidthOfBoard; row++)
             {
-                for (int j = 0; j < WidthOfBoard; j++)
+                for (int col = 0; col < WidthOfBoard; col++)
                 {
-                    if (j % 3 == 0)
+                    if (col % 3 == 0)
                     {
                         formatedMatrix += "|";
                     }
-                    if (initialNumbers[j + (i * 9)]=='0')
+                    if (initialNumbers[col + (row * 9)]=='0')
                     {
-                        Matrix[i, j] = ' ';
+                        Matrix[row, col] = ' ';
                     } else
                     {
-                        Matrix[i, j] = initialNumbers[j + (i * 9)];
+                        Matrix[row, col] = initialNumbers[col + (row * 9)];
                     }                    
-                    formatedMatrix += String.Format(" {0} ", Matrix[i, j]);
+                    formatedMatrix += String.Format(" {0} ", Matrix[row, col]);
                 }
                 formatedMatrix += "|\n";
-                if ((i + 1) % 3 == 0)
+                if ((row + 1) % 3 == 0)
                 {
                     formatedMatrix += "+---------+---------+---------+\n";
                 }
