@@ -12,11 +12,9 @@ namespace Sudoku
 
         public string BoardAsText { get; set; }
 
-
         public Sudoku(string initArragement)
         {
-            BoardAsText = FormatString(initArragement);
-            Console.WriteLine(BoardAsText);
+            BoardAsText = FormatString(initArragement);            
         }
 
         public string FormatString (string initArragement)
@@ -28,7 +26,7 @@ namespace Sudoku
             {
                 for (int j = 0; j < WidthOfBoard; j++)
                 {
-                    if (j%3==0)
+                    if (j % 3 == 0)
                     {
                         formatedMatrix += "|";
                     }
@@ -42,18 +40,14 @@ namespace Sudoku
                     formatedMatrix += String.Format(" {0} ", matrix[i, j]);
                 }
                 formatedMatrix += "|\n";
-                if ((i+1) % 3 == 0)
+                if ((i + 1) % 3 == 0)
                 {
                     formatedMatrix += "+---------+---------+---------+\n";
                 }
-            }
-            //formatedMatrix += "+-----------+-----------+-----------+";
-
+            }            
             return formatedMatrix;
         }
-
-
-
+               
         public void Solve()
         {
 

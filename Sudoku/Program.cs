@@ -15,7 +15,7 @@ namespace Sudoku
                                         "002609500800203009005010300");
 
             //game.Solve();
-            //Console.WriteLine(game.BoardAsText);   
+            Console.WriteLine(game.BoardAsText);   
             
         }
     }
