@@ -102,5 +102,68 @@ namespace Sudoku
             }
             return true;
         }
+
+        public bool IsExclusiveInUnit(int number, int row, int col)
+        {
+            CheckUnitStart(row, col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit);
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+
+                }
+            }
+        }
+
+        public void CheckUnitStart(int row, int col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit)
+        {
+            if (row < 3 && col < 3)
+            {
+                firstColumnPositionInUnit = 0;
+                firstRowPositionInUnit = 0;
+            }
+            else if ((row < 3) && (col > 2 && col < 6))
+            {
+                firstColumnPositionInUnit = 3;
+                firstRowPositionInUnit = 0;
+            }
+            else if ((row < 3) && (col > 5))
+            {
+                firstColumnPositionInUnit = 6;
+                firstRowPositionInUnit = 0;
+            }
+            else if ((row > 3 && row < 6) && (col < 3))
+            {
+                firstColumnPositionInUnit = 0;
+                firstRowPositionInUnit = 3;
+            }
+            else if ((row > 5) && (col < 3))
+            {
+                firstColumnPositionInUnit = 0;
+                firstRowPositionInUnit = 6;
+            }
+            else if ((row > 3 && row < 6) && (col > 2 && col < 6))
+            {
+                firstColumnPositionInUnit = 3;
+                firstRowPositionInUnit = 3;
+            }
+            else if ((row > 5) && (col > 2 && col < 6))
+            {
+                firstColumnPositionInUnit = 3;
+                firstRowPositionInUnit = 6;
+            }
+            else if ((row > 2 && row < 6) && (col > 5))
+            {
+                firstColumnPositionInUnit = 6;
+                firstRowPositionInUnit = 3;
+            }
+            else 
+            {
+                firstColumnPositionInUnit = 6;
+                firstRowPositionInUnit = 6;
+            }
+
+        }
     }
 }
