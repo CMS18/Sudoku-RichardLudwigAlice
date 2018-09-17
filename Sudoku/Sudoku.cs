@@ -53,48 +53,54 @@ namespace Sudoku
         {
             for (int row = 0; row < WidthOfBoard; row++)
             {
-                int numberToCheck = ReturnLowestMissingNumberInRow(row);
-                bool exclusiveEmptySquare = false;
-                if (numberToCheck != 0)
+                for (int col = 0; col < WidthOfBoard; col++)
                 {
-                    exclusiveEmptySquare = CheckRow(numberToCheck, row, exclusiveEmptySquare);
-                }
-            }
-
-        }
-
-        public int ReturnLowestMissingNumberInRow(int row)
-        {
-            for (int i = 1; i <= WidthOfBoard; i++)
-            {
-                for (int j = 0; j < WidthOfBoard; j++)
-                {
-                    if (Matrix[row, j] != i)
+                    if (CellIsEmpty(row, col) == true)
                     {
-                        return i;
+                        for (int number = 1; number <= 9; number++)
+                        {
+                            if (IsExclusiveInRow(number, row))
+                            {
+                                if (IsExclusiveInColumn(number, col))
+                                {
+                                    if (IsExclusiveInUnit(number, row, col))
+                                    {
+                                        FillBoard(number, row, col);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-            return 0;
         }
 
-        public bool CheckRow(int numberToCheck, int column, bool numberIsExclusive)
+        public bool CellIsEmpty(int row, int col)
+        {
+            if (Matrix[row, col] == ' ')
+                return true;
+            else
+                return false;
+        }
+
+        public bool IsExclusiveInRow(int number, int row)
         {
             for (int i = 0; i < WidthOfBoard; i++)
-            {                
-                if (Matrix[i, column] == numberToCheck)
-                {
-                    return false;                    
-                }               
-            }
-            if (numberIsExclusive == true)
             {
-                return false;
-            } else
-            {
-                return true;
+                if (Matrix[row, i] == number)
+                    return false;
             }
+            return true;
+        }
 
+        public bool IsExclusiveInColumn(int number, int col)
+        {
+            for (int i = 0; i < WidthOfBoard; i++)
+            {
+                if (Matrix[i, col] == number)
+                    return false;
+            }
+            return true;
         }
     }
 }
