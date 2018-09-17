@@ -107,13 +107,16 @@ namespace Sudoku
         {
             CheckUnitStart(row, col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit);
 
-            for (int i = 0; i < 3; i++)
+            for (int i = firstRowPositionInUnit; i < (firstRowPositionInUnit + 3); i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = firstColumnPositionInUnit; j < (firstColumnPositionInUnit + 3); j++)
                 {
-
+                    if (Matrix[i, j] == number)
+                        return false;
                 }
             }
+
+            return true;
         }
 
         public void CheckUnitStart(int row, int col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit)
@@ -133,7 +136,7 @@ namespace Sudoku
                 firstColumnPositionInUnit = 6;
                 firstRowPositionInUnit = 0;
             }
-            else if ((row > 3 && row < 6) && (col < 3))
+            else if ((row > 2 && row < 6) && (col < 3))
             {
                 firstColumnPositionInUnit = 0;
                 firstRowPositionInUnit = 3;
@@ -143,7 +146,7 @@ namespace Sudoku
                 firstColumnPositionInUnit = 0;
                 firstRowPositionInUnit = 6;
             }
-            else if ((row > 3 && row < 6) && (col > 2 && col < 6))
+            else if ((row > 2 && row < 6) && (col > 2 && col < 6))
             {
                 firstColumnPositionInUnit = 3;
                 firstRowPositionInUnit = 3;
@@ -163,6 +166,12 @@ namespace Sudoku
                 firstColumnPositionInUnit = 6;
                 firstRowPositionInUnit = 6;
             }
+
+        }
+
+        public void FillBoard(int number, int row, int col)
+        {
+            Matrix[row, col] = (char)(number + 48);
 
         }
     }
