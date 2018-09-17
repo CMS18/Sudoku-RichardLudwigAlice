@@ -51,28 +51,66 @@ namespace Sudoku
                
         public void Solve()
         {
-            for (int row = 0; row < WidthOfBoard; row++)
+            do
             {
-                for (int col = 0; col < WidthOfBoard; col++)
+                for (int row = 0; row < WidthOfBoard; row++)
                 {
-                    if (CellIsEmpty(row, col) == true)
+                    for (int col = 0; col < WidthOfBoard; col++)
                     {
-                        for (int number = 1; number <= 9; number++)
+                        if (CellIsEmpty(row, col) == true)
                         {
-                            if (IsExclusiveInRow(number, row))
+                            if (IsExclusive(row, col, out int exclusiveNumber))
                             {
-                                if (IsExclusiveInColumn(number, col))
-                                {
-                                    if (IsExclusiveInUnit(number, row, col))
-                                    {
-                                        FillBoard(number, row, col);
-                                    }
-                                }
+                                FillBoard(exclusiveNumber, row, col);
+
+                                BoardAsText = UpdateBoard();
+
+                            }
+                        }
+                    }
+                }
+            } while (BoardContainsEmptyCell());
+        }
+
+        public bool BoardContainsEmptyCell()
+        {
+            for (int i = 0; i < WidthOfBoard; i++)
+            {
+                for (int j = 0; j < WidthOfBoard; j++)
+                {
+                    if (Matrix[i, j] == ' ')
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsExclusive(int row, int col, out int exclusiveNumber)
+        {
+            exclusiveNumber = 0;
+            bool exclusive = false;
+
+            for (int number = 1; number <= 9; number++)
+            {
+                if (IsExclusiveInRow(number, row))
+                {
+                    if (IsExclusiveInColumn(number, col))
+                    {
+                        if (IsExclusiveInUnit(number, row, col))
+                        {
+                            if (exclusive)
+                                return false;
+                            else
+                            {
+                                exclusive = true;
+                                exclusiveNumber = number;
                             }
                         }
                     }
                 }
             }
+
+            return exclusive;
         }
 
         public bool CellIsEmpty(int row, int col)
@@ -87,7 +125,7 @@ namespace Sudoku
         {
             for (int i = 0; i < WidthOfBoard; i++)
             {
-                if (Matrix[row, i] == number)
+                if (Matrix[row, i] == (char)(number + 48))
                     return false;
             }
             return true;
@@ -97,7 +135,7 @@ namespace Sudoku
         {
             for (int i = 0; i < WidthOfBoard; i++)
             {
-                if (Matrix[i, col] == number)
+                if (Matrix[i, col] == (char)(number + 48))
                     return false;
             }
             return true;
@@ -111,7 +149,7 @@ namespace Sudoku
             {
                 for (int j = firstColumnPositionInUnit; j < (firstColumnPositionInUnit + 3); j++)
                 {
-                    if (Matrix[i, j] == number)
+                    if (Matrix[i, j] == (char)(number + 48))
                         return false;
                 }
             }
@@ -173,6 +211,30 @@ namespace Sudoku
         {
             Matrix[row, col] = (char)(number + 48);
 
+        }
+
+        public string UpdateBoard()
+        {
+            string formatedMatrix = "+---------+---------+---------+\n";
+
+            for (int row = 0; row < WidthOfBoard; row++)
+            {
+                for (int col = 0; col < WidthOfBoard; col++)
+                {
+                    if (col % 3 == 0)
+                    {
+                        formatedMatrix += "|";
+                    }
+                    
+                    formatedMatrix += String.Format(" {0} ", Matrix[row, col]);
+                }
+                formatedMatrix += "|\n";
+                if ((row + 1) % 3 == 0)
+                {
+                    formatedMatrix += "+---------+---------+---------+\n";
+                }
+            }
+            return formatedMatrix;
         }
     }
 }

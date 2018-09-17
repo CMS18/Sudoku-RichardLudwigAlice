@@ -16,6 +16,7 @@ namespace Sudoku
 
             Console.WriteLine(game.BoardAsText);
             game.Solve();
+            Console.WriteLine(game.BoardAsText);
         }
     }
 }
