@@ -11,15 +11,18 @@ namespace Sudoku
         const int WidthOfBoard = 9;
        
         public string BoardAsText { get; set; }
-        public char[,] Matrix { get; set; }
+        private char[,] Matrix { get; set; }
+        private char[,] PreviousMatrix = new char[9, 9];
 
+        // Sudoku - Konstruktorn som bestämmer storleken på matrisen (9x9) och skriver in brädet i BoardAsText.
         public Sudoku(string initialNumbers)
         {
             Matrix = new char[WidthOfBoard, WidthOfBoard];
             BoardAsText = StringToSudokuBoard(initialNumbers);            
         }
 
-        public string StringToSudokuBoard (string initialNumbers)
+        // StringToSudokuBoard - Används vid initialiseringen av brädet från en lång string med alla förbestämda siffror och nollor på de tomma rutorna.
+        private string StringToSudokuBoard (string initialNumbers)
         {
             string formatedMatrix = "+---------+---------+---------+\n";
 
@@ -48,44 +51,90 @@ namespace Sudoku
             }            
             return formatedMatrix;
         }
-               
+
+        // UpdateBoard - Uppdaterar utskriftssträngen med nuvarande bräde.
+        private string UpdateBoard()
+        {
+            string formatedMatrix = "+---------+---------+---------+\n";
+
+            for (int row = 0; row < WidthOfBoard; row++)
+            {
+                for (int col = 0; col < WidthOfBoard; col++)
+                {
+                    if (col % 3 == 0)
+                    {
+                        formatedMatrix += "|";
+                    }
+
+                    formatedMatrix += String.Format(" {0} ", Matrix[row, col]);
+                }
+                formatedMatrix += "|\n";
+                if ((row + 1) % 3 == 0)
+                {
+                    formatedMatrix += "+---------+---------+---------+\n";
+                }
+            }
+            return formatedMatrix;
+        }
+
+        // Solve - Den metod som anropas utifrån för att starta igång lösaren.
         public void Solve()
         {
             do
             {
+                CopyBoard(PreviousMatrix, Matrix);
+
                 for (int row = 0; row < WidthOfBoard; row++)
                 {
                     for (int col = 0; col < WidthOfBoard; col++)
                     {
-                        if (CellIsEmpty(row, col) == true)
+                        if (CellIsEmpty(row, col))
                         {
                             if (IsExclusive(row, col, out int exclusiveNumber))
                             {
                                 FillBoard(exclusiveNumber, row, col);
-
                                 BoardAsText = UpdateBoard();
 
                             }
                         }
                     }
                 }
+
+                if (BoardCheck(PreviousMatrix, Matrix))
+                {
+                    Console.WriteLine("Tyvärr, jag klarade inte av att hitta en lösning...\nSå här långt kom jag: ");
+                    break;
+                }
             } while (BoardContainsEmptyCell());
+            if (!BoardContainsEmptyCell())
+            {
+                Console.WriteLine("Hurra! Jag hittade en lösning som ser ut så här:");
+            }
         }
 
-        public bool BoardContainsEmptyCell()
+        // CopyBoard - Kollar om en siffra har lagts till i brädet efter att alla tomma rutor har kollats.
+        private void CopyBoard(char[,] previousBoard, char[,] currentBoard)
         {
-            for (int i = 0; i < WidthOfBoard; i++)
+            for (int row = 0; row < WidthOfBoard; row++)
             {
-                for (int j = 0; j < WidthOfBoard; j++)
+                for (int col = 0; col < WidthOfBoard; col++)
                 {
-                    if (Matrix[i, j] == ' ')
-                        return true;
+                    previousBoard[row, col] = currentBoard[row, col];
                 }
             }
-            return false;
         }
 
-        public bool IsExclusive(int row, int col, out int exclusiveNumber)
+        // CellIsEmpty - Kollar om en viss rad och kolumn innehåller ett tomrum.
+        private bool CellIsEmpty(int row, int col)
+        {
+            if (Matrix[row, col] == ' ')
+                return true;
+            else
+                return false;
+        }
+
+        // IsExclusive - Den metod som gör de anropanden för att kolla om en specifik siffra redan finns på en rad, kolumn och enhet.
+        private bool IsExclusive(int row, int col, out int exclusiveNumber)
         {
             exclusiveNumber = 0;
             bool exclusive = false;
@@ -113,35 +162,30 @@ namespace Sudoku
             return exclusive;
         }
 
-        public bool CellIsEmpty(int row, int col)
+        // IsExclusiveInRow - Självsägande. Eftersome Matrix är en char-matris så måste man addera 48 till int:en "i" för att hamna på rätt charnummer för 1-9.
+        private bool IsExclusiveInRow(int number, int row)
         {
-            if (Matrix[row, col] == ' ')
-                return true;
-            else
-                return false;
-        }
-
-        public bool IsExclusiveInRow(int number, int row)
-        {
-            for (int i = 0; i < WidthOfBoard; i++)
+            for (int col = 0; col < WidthOfBoard; col++)
             {
-                if (Matrix[row, i] == (char)(number + 48))
+                if (Matrix[row, col] == (char)(number + 48))
                     return false;
             }
             return true;
         }
 
-        public bool IsExclusiveInColumn(int number, int col)
+        // IsExclusiveInColumn - Självsägande. Eftersome Matrix är en char-matris så måste man addera 48 till int:en "i" för att hamna på rätt charnummer för 1-9.
+        private bool IsExclusiveInColumn(int number, int col)
         {
-            for (int i = 0; i < WidthOfBoard; i++)
+            for (int row = 0; row < WidthOfBoard; row++)
             {
-                if (Matrix[i, col] == (char)(number + 48))
+                if (Matrix[row, col] == (char)(number + 48))
                     return false;
             }
             return true;
         }
 
-        public bool IsExclusiveInUnit(int number, int row, int col)
+        // IsExclusiveInUnit - Självsägande. Eftersome Matrix är en char-matris så måste man addera 48 till int:en "i" för att hamna på rätt charnummer för 1-9.
+        private bool IsExclusiveInUnit(int number, int row, int col)
         {
             CheckUnitStart(row, col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit);
 
@@ -157,7 +201,8 @@ namespace Sudoku
             return true;
         }
 
-        public void CheckUnitStart(int row, int col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit)
+        // CheckUnitStart - Kollar i vilken av de nio enheterna man står i och returnernar dessa enheters övre-vänstra position.
+        private void CheckUnitStart(int row, int col, out int firstRowPositionInUnit, out int firstColumnPositionInUnit)
         {
             if (row < 3 && col < 3)
             {
@@ -199,42 +244,49 @@ namespace Sudoku
                 firstColumnPositionInUnit = 6;
                 firstRowPositionInUnit = 3;
             }
-            else 
+            else
             {
                 firstColumnPositionInUnit = 6;
                 firstRowPositionInUnit = 6;
             }
-
         }
-
-        public void FillBoard(int number, int row, int col)
+                
+        private void FillBoard(int number, int row, int col)
         {
             Matrix[row, col] = (char)(number + 48);
 
         }
 
-        public string UpdateBoard()
+        // BoardCheck - Kollar om brädet har uppdaterats efter man har kollat igenom alla tomma celler en gång.
+        private bool BoardCheck(char[,] previousBoard, char[,] currentBoard)
         {
-            string formatedMatrix = "+---------+---------+---------+\n";
-
             for (int row = 0; row < WidthOfBoard; row++)
             {
                 for (int col = 0; col < WidthOfBoard; col++)
                 {
-                    if (col % 3 == 0)
+                    if (previousBoard[row, col] != currentBoard[row, col])
                     {
-                        formatedMatrix += "|";
+                        return false;
                     }
-                    
-                    formatedMatrix += String.Format(" {0} ", Matrix[row, col]);
                 }
-                formatedMatrix += "|\n";
-                if ((row + 1) % 3 == 0)
+
+            }
+            return true;
+        }
+
+        // BoardContainsEmptyCell - Kollar om det fortfarande finns tomma celler kvar i brädet. 
+        private bool BoardContainsEmptyCell()
+        {
+            for (int i = 0; i < WidthOfBoard; i++)
+            {
+                for (int j = 0; j < WidthOfBoard; j++)
                 {
-                    formatedMatrix += "+---------+---------+---------+\n";
+                    if (Matrix[i, j] == ' ')
+                        return true;
                 }
             }
-            return formatedMatrix;
+            return false;
         }
+
     }
 }
