@@ -65,7 +65,6 @@ namespace Sudoku
                     {
                         formatedMatrix += "|";
                     }
-
                     formatedMatrix += String.Format(" {0} ", Matrix[row, col]);
                 }
                 formatedMatrix += "|\n";
@@ -94,7 +93,6 @@ namespace Sudoku
                             {
                                 FillBoard(exclusiveNumber, row, col);
                                 BoardAsText = UpdateBoard();
-
                             }
                         }
                     }
@@ -254,7 +252,6 @@ namespace Sudoku
         private void FillBoard(int number, int row, int col)
         {
             Matrix[row, col] = (char)(number + 48);
-
         }
 
         // BoardCheck - Kollar om brädet har uppdaterats efter man har kollat igenom alla tomma celler en gång.
@@ -269,7 +266,6 @@ namespace Sudoku
                         return false;
                     }
                 }
-
             }
             return true;
         }
