@@ -9,10 +9,12 @@ namespace Sudoku
     class Sudoku
     {
         const int WidthOfBoard = 9;
-       
+
+        int[,] emptyCellCoordinates;
         public string BoardAsText { get; set; }
         private char[,] Matrix { get; set; }
         private char[,] PreviousMatrix = new char[9, 9];
+        public bool Solved { get; private set; }
 
         // Sudoku - Konstruktorn som bestämmer storleken på matrisen (9x9) och skriver in brädet i BoardAsText.
         public Sudoku(string initialNumbers)
@@ -100,7 +102,8 @@ namespace Sudoku
 
                 if (BoardCheck(PreviousMatrix, Matrix))
                 {
-                    Console.WriteLine("Tyvärr, jag klarade inte av att hitta en lösning...\nSå här långt kom jag: ");
+                    // Console.WriteLine("Tyvärr, jag klarade inte av att hitta en lösning...\nSå här långt kom jag: ");
+                    emptyCellCoordinates = GatherRemainingEmptyCells();
                     break;
                 }
             } while (BoardContainsEmptyCell());
@@ -284,5 +287,99 @@ namespace Sudoku
             return false;
         }
 
+        // GatherRemainingEmptyCells - Spits out a int[x,2] array with the coordinates of all empty cells on the board (row coordinate in first column, column coordinate in second column)
+        private int[,] GatherRemainingEmptyCells()
+        {
+            int[,] emptyCellCoordinates = new int[NumberOfEmptyCells(), 2];
+            int matrixPosition = 0;
+            for (int row = 0; row < WidthOfBoard; row++)
+            {
+                for (int col = 0; col < WidthOfBoard; col++)
+                {
+                    if (CellIsEmpty(row, col))
+                    {
+                        emptyCellCoordinates[matrixPosition, 0] = row;
+                        emptyCellCoordinates[matrixPosition, 1] = col;
+                        matrixPosition++;
+                    }
+                }
+            }
+            return emptyCellCoordinates;
+        }
+
+        // NumberOfEmptyCells - Kollar hur många tomma rutor som finns på brädet.
+        private int NumberOfEmptyCells()
+        {
+            int numberOfEmptyCells = 0;
+
+            for (int row = 0; row < WidthOfBoard; row++)
+            {
+                for (int col = 0; col < WidthOfBoard; col++)
+                {
+                    if (CellIsEmpty(row, col))
+                    {
+                        numberOfEmptyCells++;
+                    }
+                }
+            }
+            return numberOfEmptyCells;
+        }
+
+        public void RecursiveSolveStarter()
+        {
+            for (int i = 1; i <= 9; i++)
+            {
+                SolveWithRecursion(0, emptyCellCoordinates[0, 0], emptyCellCoordinates[0, 1], i);
+            }
+        }
+
+        private void SolveWithRecursion(int count, int row, int col, int number)
+        {
+            /*
+            if (number > 9)
+            {
+                return;
+            }
+            */
+            if (!IsExclusiveInRow(number, row))
+            {
+                return;
+            }
+            if (!IsExclusiveInColumn(number, col))
+            {
+                return;
+            }
+            if (!IsExclusiveInUnit(number, row, col))
+            {
+                return;
+            }
+
+            FillBoard(number, row, col);
+            BoardAsText = UpdateBoard();
+            //Console.Clear();
+            //Console.WriteLine(this.BoardAsText);
+            //System.Threading.Thread.Sleep(200);
+
+            if (!BoardContainsEmptyCell())
+            {
+                Console.WriteLine("Jag hittade en lösning som ser ut såhär:\n");
+                Console.WriteLine(this.BoardAsText);
+                Solved = true;
+
+                return;
+            }
+
+            for (int i = 1; i <= 9; i++)
+            {
+                SolveWithRecursion((count + 1), emptyCellCoordinates[(count + 1), 0], emptyCellCoordinates[(count + 1), 1], i);
+            }
+
+            Matrix[row, col] = ' ';
+            //BoardAsText = UpdateBoard();
+            //Console.Clear();
+            //Console.WriteLine(this.BoardAsText);
+            //System.Threading.Thread.Sleep(200);
+
+        }
     }
 }
