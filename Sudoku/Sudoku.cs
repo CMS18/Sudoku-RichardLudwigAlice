@@ -110,6 +110,7 @@ namespace Sudoku
             if (!BoardContainsEmptyCell())
             {
                 Console.WriteLine("Hurra! Jag hittade en lösning som ser ut så här:");
+                Solved = true;
             }
         }
 
@@ -327,7 +328,7 @@ namespace Sudoku
 
         public void RecursiveSolveStarter()
         {
-            for (int i = 1; i <= 9; i++)
+            for (int i = 9; i >= 1; i--)
             {
                 SolveWithRecursion(0, emptyCellCoordinates[0, 0], emptyCellCoordinates[0, 1], i);
             }
@@ -355,13 +356,14 @@ namespace Sudoku
             }
 
             FillBoard(number, row, col);
-            BoardAsText = UpdateBoard();
-            //Console.Clear();
+            //BoardAsText = UpdateBoard();
+            //Console.SetCursorPosition(0, 0);
             //Console.WriteLine(this.BoardAsText);
-            //System.Threading.Thread.Sleep(200);
+            //System.Threading.Thread.Sleep(1000);
 
             if (!BoardContainsEmptyCell())
             {
+                BoardAsText = UpdateBoard();
                 Console.WriteLine("Jag hittade en lösning som ser ut såhär:\n");
                 Console.WriteLine(this.BoardAsText);
                 Solved = true;
@@ -369,7 +371,7 @@ namespace Sudoku
                 return;
             }
 
-            for (int i = 1; i <= 9; i++)
+            for (int i = 9; i >= 1; i--)
             {
                 SolveWithRecursion((count + 1), emptyCellCoordinates[(count + 1), 0], emptyCellCoordinates[(count + 1), 1], i);
             }
