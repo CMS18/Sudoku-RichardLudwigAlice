@@ -26,7 +26,7 @@ namespace Sudoku
             string unsolvable4 = "900100004014030800003000090000708001800003000000000030021000070009040500500016003";
             string unsolvable5 = "040100350000000000000205000000408900260000012050300007004000160600007000010080020";
 
-            Sudoku game = new Sudoku(unsolvable3);
+            Sudoku game = new Sudoku(diabolic1);
                         
             Console.WriteLine(game.BoardAsText);
             game.Solve();

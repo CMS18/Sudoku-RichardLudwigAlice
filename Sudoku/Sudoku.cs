@@ -336,6 +336,10 @@ namespace Sudoku
 
         private void SolveWithRecursion(int count, int row, int col, int number)
         {
+            if (Solved)
+            {
+                return;
+            }
             /*
             if (number > 9)
             {
