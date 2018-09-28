@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku
 {
-    class Sudoku
+    public class Sudoku
     {
         const int WidthOfBoard = 9;
 
